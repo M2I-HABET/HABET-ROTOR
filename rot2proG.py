@@ -11,10 +11,11 @@ Brief: 	This class is a control interface for the SPID Elektronik rot2proG anten
 import serial
 import time
 import os
-
 '''
 This class defines the control interface for the SPID Elektronik rot2proG antenna rotor controller.
+
 Note: 	The controller will not change azimuth or elevation values unless the rotor is connected.
+
 Setup:	The controller must be set to use the "SPID" protocol. To do this, press the 'S' button on the
 	controller until it says 'PS' along with the current azimuth and elevation. Then the left or
 	right buttons on the controller to change between protocols. Select the protocol saying 'SP' in
@@ -31,7 +32,7 @@ class Rot2proG:
 	min_az = float(-180)
 	max_el = float(180)
 	min_el = float(0)
-	dev_path = '/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AL00NJE6-if00-port0'
+	dev_path = '/dev/cu.usbserial-A4008X6p'
 
 	'''
 	This sets up the serial connection and pulse value.
@@ -83,10 +84,14 @@ class Rot2proG:
 		cmd = ['\x57','\x00','\x00','\x00','\x00','\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x1f', '\x20']
 		packet = "".join(cmd)
 		
-		self.ser.write(packet)
+		self.ser.write(str.encode(packet))
 		self.ser.flush()
 
+		print(str.encode(packet))
+
 		rec_packet = self.ser.read(12)
+
+		print(rec_packet)
 
 		az = (ord(rec_packet[1]) * 100) + (ord(rec_packet[2]) * 10) + ord(rec_packet[3]) + (ord(rec_packet[4]) / 10) - 360.0
 		el = (ord(rec_packet[6]) * 100) + (ord(rec_packet[7]) * 10) + ord(rec_packet[8]) + (ord(rec_packet[9]) / 10) - 360.0
@@ -124,21 +129,21 @@ class Rot2proG:
 		rec_packet = self.ser.read(12)
 
 		az = (ord(rec_packet[1]) * 100) + (ord(rec_packet[2]) * 10) + ord(rec_packet[3]) + (ord(rec_packet[4]) / 10) - 360.0
-                el = (ord(rec_packet[6]) * 100) + (ord(rec_packet[7]) * 10) + ord(rec_packet[8]) + (ord(rec_packet[9]) / 10) - 360.0
+		el = (ord(rec_packet[6]) * 100) + (ord(rec_packet[7]) * 10) + ord(rec_packet[8]) + (ord(rec_packet[9]) / 10) - 360.0
 		ph = ord(rec_packet[5])
-                pv = ord(rec_packet[10])
+		pv = ord(rec_packet[10])
 
 		ret = [az, el, ph]
 
 		assert(ph == pv)
-                self.pulse = ph
+		self.pulse = ph
 
 		if(self.debug):
 			print("STOP COMMAND SENT")
 			print("Azimuth:   " + str(az))
 			print("Elevation: " + str(el))
-                        print("PH: " + str(ph))
-                        print("PV: " + str(pv) + "\n")
+			print("PH: " + str(ph))
+			print("PV: " + str(pv) + "\n")
 
 		return ret
 
@@ -198,8 +203,8 @@ class Rot2proG:
 				if cmd == "STATUS" or cmd == "status":
 					pos=self.status()
 					print("Azimuth:   " + str(pos[0]))
-                                        print("Elevation: " + str(pos[1]))
-                                        print("Pulse: " + str(pos[2]) + "\n")
+					print("Elevation: " + str(pos[1]))
+					print("Pulse: " + str(pos[2]) + "\n")
 
 				elif cmd == "STOP" or cmd == "stop":
 					pos=self.stop()
@@ -250,6 +255,6 @@ class Rot2proG:
 
 if __name__ == "__main__":
 	rot = Rot2proG()
-	rot.cmd_mode()
+	rot.status()
 	del rot
 	print("Done")
