@@ -11,6 +11,7 @@ Brief: 	This class is a control interface for the SPID Elektronik rot2proG anten
 import serial
 import time
 import os
+import curses
 '''
 This class defines the control interface for the SPID Elektronik rot2proG antenna rotor controller.
 
@@ -32,7 +33,7 @@ class Rot2proG:
 	min_az = float(-180)
 	max_el = float(180)
 	min_el = float(0)
-	dev_path = '/dev/cu.usbserial-A4008X6p'
+	dev_path = ""
 
 	'''
 	This sets up the serial connection and pulse value.
@@ -40,8 +41,9 @@ class Rot2proG:
 	asimuth, elevation and pulse to be printed out when functions are called.
 	Debugging defualts to False.
 	'''
-	def __init__(self, debugging=False):
+	def __init__(self, debugging=False, dev_path):
 		#self.ser = serial.Serial(port='/dev/ttyUSB0',baudrate=600, bytesize=8, parity='N', stopbits=1, timeout=None)
+		self.dev_path = dev_path
 		self.ser = serial.Serial(port=self.dev_path, baudrate=600, bytesize=8, parity='N', stopbits=1, timeout=None)
 		print(str(self.ser.name))
 		self.status()
@@ -84,19 +86,14 @@ class Rot2proG:
 		cmd = ['\x57','\x00','\x00','\x00','\x00','\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x1f', '\x20']
 		packet = "".join(cmd)
 		
-		self.ser.write(str.encode(packet))
+		self.ser.write(packet.encode())
 		self.ser.flush()
 
-		print(str.encode(packet))
-
-		rec_packet = self.ser.read(12)
-
-		print(rec_packet)
-
-		az = (ord(rec_packet[1]) * 100) + (ord(rec_packet[2]) * 10) + ord(rec_packet[3]) + (ord(rec_packet[4]) / 10) - 360.0
-		el = (ord(rec_packet[6]) * 100) + (ord(rec_packet[7]) * 10) + ord(rec_packet[8]) + (ord(rec_packet[9]) / 10) - 360.0
-		ph = ord(rec_packet[5])
-		pv = ord(rec_packet[10])
+		rec_packet = self.ser.read(12).decode()
+		az = (ord(str(rec_packet[1])) * 100) + (ord(str(rec_packet[2])) * 10) + ord(str(rec_packet[3])) + (ord(str(rec_packet[4])) / 10) - 360.0
+		el = (ord(str(rec_packet[6])) * 100) + (ord(str(rec_packet[7])) * 10) + ord(str(rec_packet[8])) + (ord(str(rec_packet[9])) / 10) - 360.0
+		ph = ord(str(rec_packet[5]))
+		pv = ord(str(rec_packet[10]))
 
 		ret = [az, el, ph]
 
@@ -123,15 +120,15 @@ class Rot2proG:
 		cmd = ['\x57','\x00','\x00','\x00','\x00','\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x0f', '\x20']
 		packet = "".join(cmd)
 
-		self.ser.write(packet)
+		self.ser.write(packet.encode())
 		self.ser.flush()
 
-		rec_packet = self.ser.read(12)
+		rec_packet = self.ser.read(12).decode()
 
-		az = (ord(rec_packet[1]) * 100) + (ord(rec_packet[2]) * 10) + ord(rec_packet[3]) + (ord(rec_packet[4]) / 10) - 360.0
-		el = (ord(rec_packet[6]) * 100) + (ord(rec_packet[7]) * 10) + ord(rec_packet[8]) + (ord(rec_packet[9]) / 10) - 360.0
-		ph = ord(rec_packet[5])
-		pv = ord(rec_packet[10])
+		az = (ord(str(rec_packet[1])) * 100) + (ord(str(rec_packet[2])) * 10) + ord(str(rec_packet[3])) + (ord(str(rec_packet[4])) / 10) - 360.0
+		el = (ord(str(rec_packet[6])) * 100) + (ord(str(rec_packet[7])) * 10) + ord(str(rec_packet[8])) + (ord(str(rec_packet[9])) / 10) - 360.0
+		ph = ord(str(rec_packet[5]))
+		pv = ord(str(rec_packet[10]))
 
 		ret = [az, el, ph]
 
@@ -166,7 +163,7 @@ class Rot2proG:
 		cmd = ['\x57', az[-4], az[-3], az[-2], az[-1], chr(self.pulse), el[-4], el[-3], el[-2], el[-1], chr(self.pulse), '\x2f', '\x20']
 		packet = "".join(cmd)
 
-		self.ser.write(packet)
+		self.ser.write(packet.encode())
 		self.ser.flush()
 
 		if(self.debug):
@@ -183,38 +180,164 @@ class Rot2proG:
 	in order to test the rot2proG class functionality
 	'''
 	def test(self):
-		rot = Rot2proG(True)
-		rot.status()
-		rot.stop()
-		rot.set(209, 13)
-		rot.status()
-		time.sleep(3)
-		rot.status()
-		time.sleep(10)
-		rot.set(19, 144)
-		rot.status()
-		rot.stop()
+		self.status()
+		self.stop()
+		self.set(90, 90)
+		a=True
+		while(a):
+			time.sleep(2)
+			val = self.status()
+			print(val)
+			if(90 == val[0] and 90 == val[1]):
+				a = False
+			print("Az="+str(val[0]))
+			print("El="+str(val[1]))
+		self.set(0, 0)
+		a=True
+		while(a):
+			time.sleep(2)
+			val = self.status()
+			if(0 == val[0] and 0 == val[1]):
+				a = False
+			print("Az="+str(val[0]))
+			print("El="+str(val[1]))
+		self.stop()
+
+	def man_draw(self, stdscr, start=0):
+		if(start < 0):
+			start=0
+		pos = stdscr.getmaxyx()
+		line=1
+
+		content = [("ROT2PROG                                                        Command Mode ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("NAME                                                                         ", curses.A_BOLD),
+						   ("    Rot2proG [command mode] - terminal interface for rotor controller        ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("DESCRIPTION                                                                  ", curses.A_BOLD),
+						   ("    ...                                                                      ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("FUNCTIONS                                                                    ", curses.A_BOLD),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("      STATUS, status                                                         ", curses.A_BOLD),
+						   ("           return current azimuth, elevation and pulse per degree of rotor   ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("      STOP, stop                                                             ", curses.A_BOLD),
+						   ("           stop the rotor if it is moving and return the approximate         ", curses.A_NORMAL),
+						   ("           azimuth, elevation and pulse per degree of the rotor where        ", curses.A_NORMAL),
+						   ("           it stopped                                                        ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("      SET, set                                                               ", curses.A_BOLD),
+						   ("           provide an azimuth and elevation and the rotor will change its    ", curses.A_NORMAL),
+						   ("           heading towards the designated location (no return value)         ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("      DEV, DEVICE, dev, device                                               ", curses.A_BOLD),
+						   ("           displays information about the connected device (path, name,      ", curses.A_NORMAL),
+						   ("           protocol)                                                         ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("      NEW DEVICE, new device                                                 ", curses.A_BOLD),
+						   ("           change the serial device given the absolute device path           ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("      CLEAR, clear                                                           ", curses.A_BOLD),
+						   ("           clear the terminal screen                                         ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("      HELP, help                                                             ", curses.A_BOLD),
+						   ("           display documentation outlining the functionality and commands    ", curses.A_NORMAL),
+						   ("           used in rot2proG command mode                                     ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("      EXIT, exit                                                             ", curses.A_BOLD),
+						   ("           terminates the rot2proG command mode                              ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("AUTHOR                                                                       ", curses.A_BOLD),
+						   ("           Written by Jaiden Ferraccioli                                     ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL),
+						   ("UBNL rot2proG                                                      July 2016 ", curses.A_NORMAL),
+						   ("                                                                             ", curses.A_NORMAL)]
+
+		while line < pos[0] and start < len(content):
+			stdscr.addnstr(line, 0, content[start][0], pos[1], content[start][1])
+			line += 1
+			start += 1
+			stdscr.addstr((pos[0]-1),0, " Manual page rot2proG [command mode] press q to quit ", curses.A_REVERSE)
+		stdscr.refresh()
+
+	def manual(self):
+
+		#curses.is_term_resized(nlines, ncols) - true if resize_term() woudlmodify window structure
+
+
+		stdscr = curses.initscr()
+		curses.noecho()
+		curses.raw()
+		curses.cbreak()
+		stdscr.keypad(True)
+		self.man_draw(stdscr)
+		pos=0
+		max = stdscr.getmaxyx()
+		while True:
+			max = stdscr.getmaxyx()
+			c = stdscr.getch()
+			if stdscr.is_wintouched():
+				self.man_draw(stdscr)
+			if c == ord('q'):
+				break
+			elif c == curses.KEY_UP:
+				pos -= 1
+				if pos < 0:
+					pos = 0
+				self.man_draw(stdscr, pos)
+				stdscr.addnstr(max[0]-1, 0, "                                                                             ", max[1], curses.A_NORMAL)
+				stdscr.addnstr(max[0]-1, 0, " Manual page rot2proG [command mode] press q to quit ", max[1], curses.A_REVERSE)
+
+			elif c == curses.KEY_DOWN:
+				if ((45 - max[0]) <= pos):
+					self.man_draw(stdscr, pos)
+					stdscr.addnstr(max[0]-1, 0, "                                                                             ", max[1], curses.A_NORMAL)
+					stdscr.addnstr(max[0]-1, 0, " Manual page rot2proG [command mode] (END) press q to quit ", max[1], curses.A_REVERSE)
+
+				elif ((45 - pos) > max[0]):
+					pos += 1
+					self.man_draw(stdscr, pos)
+					stdscr.addnstr(max[0]-1, 0, "                                                                             ", max[1], curses.A_NORMAL)
+					stdscr.addnstr(max[0]-1, 0, " Manual page rot2proG [command mode] press q to quit ", max[1], curses.A_REVERSE)
+
+				else:
+					pos += 1
+					self.man_draw(stdscr, pos)
+					stdscr.addnstr(max[0]-1, 0, "                                                                             ", max[1], curses.A_NORMAL)
+					stdscr.addnstr(max[0]-1, 0, " Manual page rot2proG [command mode] press q to quit ", max[1], curses.A_REVERSE)
+
+			elif c == curses.KEY_F11:
+				self.man_draw(stdscr)
+				stdscr.addnstr(max[0]-1, 0, "                                                                             ", max[1], curses.A_NORMAL)
+				stdscr.addnstr(max[0]-1, 0, " Manual page rot2proG [command mode] press q to quit ", max[1], curses.A_REVERSE)
+
+		curses.nocbreak()
+		curses.noraw()
+		stdscr.keypad(False)
+		curses.echo()
+		curses.endwin()
 
 	def cmd_mode(self):
 		ext=0
 		while(ext==0):
 			try:
-				cmd=str(raw_input("\033[92mrotor\033[0m> ")).strip()
-				if cmd == "STATUS" or cmd == "status":
+				cmd=str(input(self.dev_path+":")).strip()
+				if cmd.lower() == "status":
 					pos=self.status()
 					print("Azimuth:   " + str(pos[0]))
 					print("Elevation: " + str(pos[1]))
 					print("Pulse: " + str(pos[2]) + "\n")
 
-				elif cmd == "STOP" or cmd == "stop":
+				elif cmd.lower() == "stop":
 					pos=self.stop()
 					print("Azimuth:   " + str(pos[0]))
 					print("Elevation: " + str(pos[1]))
 					print("Pulse: " + str(pos[2]) + "\n")
 
-				elif cmd == "SET" or cmd == "set":
-					az=float(raw_input("Azimuth: "))
-					el=float(raw_input("Elevation: "))
+				elif cmd.lower() == "set":
+					az=float(input("Azimuth: "))
+					el=float(input("Elevation: "))
 					try:
 						self.set(az, el)
 					except AssertionError:
@@ -223,25 +346,27 @@ class Rot2proG:
 						print("ABORTING")
 						pass
 					print(" ")
+				elif cmd == "test":
+					self.test()
 
-				elif cmd == "DEV" or cmd == "dev" or cmd == "DEVICE" or cmd == "device":
+				elif cmd.lower() == "dev" or cmd.lower() == "device":
 					print("Rotor Controller: SPID Elektronik rot2proG")
 					print("Device Path: " + str(self.dev_path))
 					print("Protocol: SPID\n")
 
-				elif cmd == "NEW DEVICE" or cmd == "new device":
-					path=str(raw_input("Device Path: ")).strip()
+				elif cmd.lower() == "new device":
+					path=str(input("Device Path: ")).strip()
 					self.set_dev_path(path)
 					print(" ")
 
-				elif cmd == "CLEAR" or cmd == "clear":
+				elif cmd.lower() == "clear":
 					clear = lambda : os.system('clear')
 					clear()
 
-				elif cmd == "HELP" or cmd == "help":
+				elif cmd.lower() == "help":
 					self.manual()
 
-				elif cmd == "EXIT" or cmd == "exit":
+				elif cmd.lower() == "exit":
 					clear = lambda : os.system('clear')
 					clear()
 					ext=1
@@ -254,7 +379,8 @@ class Rot2proG:
 				print("Try 'help' for more information")
 
 if __name__ == "__main__":
-	rot = Rot2proG()
-	rot.status()
+	dev = 
+	rot = Rot2proG('COM27')
+	rot.cmd_mode()
 	del rot
 	print("Done")
