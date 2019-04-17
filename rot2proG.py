@@ -41,7 +41,8 @@ class Rot2proG:
 	asimuth, elevation and pulse to be printed out when functions are called.
 	Debugging defualts to False.
 	'''
-	def __init__(self, debugging=False, dev_path):
+	def __init__(self, dev_path):
+		debugging=False
 		#self.ser = serial.Serial(port='/dev/ttyUSB0',baudrate=600, bytesize=8, parity='N', stopbits=1, timeout=None)
 		self.dev_path = dev_path
 		self.ser = serial.Serial(port=self.dev_path, baudrate=600, bytesize=8, parity='N', stopbits=1, timeout=None)
@@ -379,8 +380,7 @@ class Rot2proG:
 				print("Try 'help' for more information")
 
 if __name__ == "__main__":
-	dev = 
-	rot = Rot2proG('COM27')
+	rot = Rot2proG('COM22')
 	rot.cmd_mode()
 	del rot
 	print("Done")
