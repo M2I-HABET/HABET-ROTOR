@@ -380,7 +380,7 @@ class Rot2proG:
 				print("Try 'help' for more information")
 
 if __name__ == "__main__":
-	rot = Rot2proG('COM22')
+	rot = Rot2proG('COM7')
 	rot.cmd_mode()
 	del rot
 	print("Done")
