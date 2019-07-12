@@ -2,16 +2,19 @@ import rot2proG
 import serial
 import math
 import time
+import requests
+import json
 
 home_lat = 42.02700680709537
 home_lon = -93.65338786489195
 home_alt = 300
 R = 6372.795477598*1000
 
+flightID = "58579ff6-c2ec-4650-a930-65f335929b35"
+postURL = "http://127.0.0.1:8000/REST/V1/flightpos/"+flightID
 latA = home_lat
 lonA = home_lon
 run = True
-vCom = serial.Serial(port="COM21", baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=None)
 rot = rot2proG.Rot2proG("COM7")
 while run:
     line = ""
@@ -22,20 +25,20 @@ while run:
     lonB = ''
     alt = ''
     while invalid:  # Or: while ser.inWaiting():
-        if vCom.in_waiting:
-            line = vCom.readline()
-        time.sleep(.1)
-        if line != "":
+        try:
+            r = requests.post(url = postURL, data = {})
+            print(r.text)
+            json_data = json.loads(r.text)
+            latB = float(json_data['lat'])#43.02700680709
+            lonB = float(json_data['lon'])#-94.6533878648
+            alt = float(json_data['alt'])
             invalid = False
-            data = line.decode("utf-8").strip("\n").split(",")[0:3]
-            latB = float(data[0])#43.02700680709
-            lonB = float(data[1])#-94.6533878648
-            alt = float(data[2])
-            if(latB == 0):
-                invalid = True
-        else:
-            print("No data")
-    print(line)
+        except:
+            print("no server")
+            continue
+        
+        
+                
     try:
         
         phi1 = latA*math.pi/180
@@ -52,17 +55,20 @@ while run:
         y = math.cos(latA*math.pi/180)*math.sin(math.pi/180*latB)-math.sin(math.pi/180*latA)*math.cos(math.pi/180*latB)*math.cos(math.pi/180*(lonA-lonB))
     
         az =  -180/math.pi*math.atan(x/y)
-        dla = latA-latB
-        dlo = lonA-lonB
+        dla = latB-latA
+        dlo = lonB-lonA
+        print("az"+str(az))
         print(dla)
         print(dlo)
-        if((dla>0 and dlo<0) or (dla>0 and dlo>0) ):
+        if((dla>0 and dlo<0)):
             az = az + 180
-            if(az<170):
-                az = az+180
-        if((dla<0 and dlo>0)):
-            az = az + 360
-        el = math.atan(int(alt-home_alt)/distance)
+        if((dla<0 and dlo>0)or (dla<0 and dlo<0)):
+            az = az + 180
+            
+            
+        el = 180/math.pi*math.atan(int(alt-home_alt)/distance)
+        print(alt)
+        print(home_alt)
         print("el")
         print(el)
         print("az")
