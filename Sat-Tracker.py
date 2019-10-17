@@ -11,8 +11,8 @@ degrees_per_radian = 180.0 / math.pi
 home = ephem.Observer()
 home.lon = '-93.65338786489195'   # +E
 home.lat = '42.02700680709537'      # +N
-home.elevation = 80  # meters
-freq = 145.80 * 10 ** 6
+home.elevation = 300  # meters
+freq = 145.825 * 10 ** 6
 radio_com = "COM3"
 radio_baud = "9600"
 radio_model = "101"  # hamlib radio model number
@@ -54,7 +54,7 @@ while True:
                 int(0))
     stat = rot.status()
     print("current rot pos: az=%3.0f el=%2.0f" % (stat[0], stat[1]))
-    time.sleep(1.0)
+    time.sleep(10)
     numberOfruns = numberOfruns + 1
     print()
     if numberOfruns == 1000:

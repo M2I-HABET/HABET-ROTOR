@@ -10,8 +10,8 @@ home_lon = -93.65338786489195
 home_alt = 300
 R = 6372.795477598*1000
 
-flightID = "58579ff6-c2ec-4650-a930-65f335929b35"
-postURL = "http://127.0.0.1:8000/REST/V1/flightpos/"+flightID
+flightID = "07a8aac0-3a38-412a-a0a8-cbd5a3777d67"
+postURL = "http://10.29.188.15/REST/V1/flightpos/"+flightID
 latA = home_lat
 lonA = home_lon
 run = True
@@ -57,28 +57,31 @@ while run:
         az =  -180/math.pi*math.atan(x/y)
         dla = latB-latA
         dlo = lonB-lonA
-        print("az"+str(az))
-        print(dla)
-        print(dlo)
-        if((dla>0 and dlo<0)):
-            az = az + 180
-        if((dla<0 and dlo>0)or (dla<0 and dlo<0)):
-            az = az + 180
+        az = abs(az)%90
+        #print(az)
+        #print("az"+str(az))
+        #print(dla)
+        #print(dlo)
+        if(dla<0 and dlo>0):
+            az = 180-az
+        if(dla<0 and dlo<0 and az<270):
+            az = 180+az
+        if(dla>0 and dlo<0 and (az<180 or az>270)):
+            az = 360-az
+        if(dla>0 and dlo>0 and (az<90 or az>180)):
+            az = az
             
             
         el = 180/math.pi*math.atan(int(alt-home_alt)/distance)
-        print(alt)
-        print(home_alt)
-        print("el")
-        print(el)
-        print("az")
-        print(az)
-        print("distance;")
-        print(distance)
+        #print(alt)
+        #print(home_alt)
+        print("elevation: "+ str(el))
+        print("Azumuth: " + str(az))
+        print("Distacne: "+ str(distance))
         if(el<0):
             el = 0
         
-        time.sleep(.1)
+        time.sleep(2)
         run = True
         rot.set(az,el)
     except:
