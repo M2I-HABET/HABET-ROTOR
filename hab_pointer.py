@@ -7,15 +7,15 @@ import json
 
 home_lat = 42.02700680709537
 home_lon = -93.65338786489195
-home_alt = 300
+home_alt = 320
 R = 6372.795477598*1000
 
-flightID = "07a8aac0-3a38-412a-a0a8-cbd5a3777d67"
-postURL = "http://10.29.188.15/REST/V1/flightpos/"+flightID
+flightID = "fa0b701b-e40a-4711-94c0-09fedd0b1cac"
+postURL = "http://10.29.189.44/REST/V1/flightpos/"+flightID
 latA = home_lat
 lonA = home_lon
 run = True
-rot = rot2proG.Rot2proG("COM7")
+rot = rot2proG.Rot2proG("COM26")
 while run:
     line = ""
     invalid = True
