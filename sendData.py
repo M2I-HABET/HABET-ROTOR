@@ -24,14 +24,14 @@ def serverThread(threadname, q):
     home_alt = 300
     R = 6372.795477598*1000
 
-    flightID = "07a8aac0-3a38-412a-a0a8-cbd5a3777d67"
+    flightID = "fa0b701b-e40a-4711-94c0-09fedd0b1cac"
     scriptID = "429c4f46-140b-4db4-8cf9-6acc88f5b018"
-    postURL = "http://10.29.188.15/REST/V1/flight_location"
-    postURLRaw = "http://10.29.188.15/REST/V1/flight_data_raw"
+    postURL = "http://10.29.189.44/REST/V1/flight_location"
+    postURLRaw = "http://10.29.189.44/REST/V1/flight_data_raw"
     latA = home_lat
     lonA = home_lon
     run = True
-    lora = serial.Serial(port="COM11", baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2)
+    lora = serial.Serial(port="COM27", baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2)
     lora.flushInput()
     lora.flushOutput()
     while run:
