@@ -1,0 +1,12 @@
+Tracking Software for HABET Flights
+Written: 2021-07-05
+Edited: 2021-07-05
+
+1. Run getNewFlight.py
+2. Copy the flight ID and paste it into the sendData.py and hab_pointer.py files
+3. Run sendData.py 
+	a. MUST be run before hab_pointer.py 
+	b. It must have tracking packet from the payload GPS unit (i.e. walk the payload/gps unit outside until it receives data)
+4. Run hab_pointer.py
+
+To view the flight go to: cytracking.com/cytrack/<flightID>
