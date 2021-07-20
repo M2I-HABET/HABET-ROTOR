@@ -13,10 +13,10 @@ home.lon = '-93.65338786489195'   # +E
 home.lat = '42.02700680709537'      # +N
 home.elevation = 300  # meters
 freq = 145.825 * 10 ** 6
-radio_com = "COM3"
+radio_com = "COM9" #this may be the correct com port for the penthouse - mjk 2021-07-05
 radio_baud = "9600"
 radio_model = "101"  # hamlib radio model number
-rotor_com = "COM7"
+rotor_com = "COM5" #this may be the correct com port for the penthouse - mjk 2021-07-05
 
 url = "http://www.celestrak.com/NORAD/elements/stations.txt"
 req = urlopen(url)

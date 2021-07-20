@@ -7,15 +7,15 @@ import json
 
 home_lat = 42.02700680709537
 home_lon = -93.65338786489195
-home_alt = 320
+home_alt = 350
 R = 6372.795477598*1000
 
-flightID = "fa0b701b-e40a-4711-94c0-09fedd0b1cac"
-postURL = "http://10.29.189.44/REST/V1/flightpos/"+flightID
+flightID = "0c4dbd3c-6d97-4eb9-afe1-36c069c7b2d5"
+postURL = "http://cytracking.com/REST/V1/flightpos/"+flightID
 latA = home_lat
 lonA = home_lon
 run = True
-rot = rot2proG.Rot2proG("COM26")
+rot = rot2proG.Rot2proG("COM6")
 while run:
     line = ""
     invalid = True

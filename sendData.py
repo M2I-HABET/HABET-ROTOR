@@ -24,16 +24,17 @@ def serverThread(threadname, q):
     home_alt = 300
     R = 6372.795477598*1000
 
-    flightID = "fa0b701b-e40a-4711-94c0-09fedd0b1cac"
+    flightID = "0c4dbd3c-6d97-4eb9-afe1-36c069c7b2d5"
     scriptID = "429c4f46-140b-4db4-8cf9-6acc88f5b018"
-    postURL = "http://10.29.189.44/REST/V1/flight_location"
-    postURLRaw = "http://10.29.189.44/REST/V1/flight_data_raw"
+    postURL = "http://cytracking.com/REST/V1/flight_location"
+    postURLRaw = "http://cytracking.com/REST/V1/flight_data_raw"
     latA = home_lat
     lonA = home_lon
     run = True
-    lora = serial.Serial(port="COM27", baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2)
+    lora = serial.Serial(port="COM9", baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2)
     lora.flushInput()
     lora.flushOutput()
+    print("running")
     while run:
         line = ""
         invalid = True
@@ -48,14 +49,17 @@ def serverThread(threadname, q):
                 try:
                     line = lora.readline().decode("utf-8")
                     lineToSave = line
+                    #print(lineToSave)
                     if("rssi" in lineToSave):
                         rssi = lineToSave.strip("rssi:").strip("\r\n")
                         print(rssi)
                     try:
-                        params = {'scriptID': scriptID, 'flightID': flightID, 'gps':lineToSave}
+                        if("rssi" in lineToSave or "GPGGA" in lineToSave):
+                            print(lineToSave)
+                            params = {'scriptID': scriptID, 'flightID': flightID, 'gps':lineToSave}
                     
-                        r = requests.post(url = postURLRaw, data = params, timeout=5)
-                        print(r.text)
+                            r = requests.post(url = postURLRaw, data = params, timeout=5)
+                            print(r.text)
                     except Exception as e:
                         print(e)
                     line =lineToSave.strip('\n').strip('\r')
