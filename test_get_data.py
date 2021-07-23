@@ -14,7 +14,7 @@ class MyListManager(multiprocessing.managers.BaseManager):
 MyListManager.register("syncarr")
 
 # def main():
-manager = MyListManager(address=('/tmp/mypipe'), authkey='')
+manager = MyListManager(address=('/tmp/mypipe'), authkey=''.encode('utf-8'))
 manager.connect()
 syncarr = manager.syncarr()
 
@@ -34,6 +34,8 @@ while 1:
     test_string = ""
     for item in syncarr :
         test_string += item
+    
+    print(test_string)
     time.sleep(1)
 
 

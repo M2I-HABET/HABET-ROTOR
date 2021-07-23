@@ -6,14 +6,11 @@ import requests
 import socket
 from queue import Queue
 from threading import Thread
-
-
-
-
 import multiprocessing
 import multiprocessing.managers
-
 import logging
+
+
 
 '''
 This is a script designed to parse and hold data tracking data for other programs to grab from.
@@ -49,9 +46,9 @@ def get_arr():
     return syncarr
 
 # print dir([]) # cannot do `exposed = dir([])`!! manually:
-MyListManager.register("syncarr", get_arr, exposed=['__getitem__', '__setitem__', '__str__', 'append', 'count', 'extend', 'index', 'insert', 'pop', 'remove', 'reverse', 'sort'])
+MyListManager.register("syncarr", get_arr, exposed=['__getitem__', '__setitem__', '__str__', 'append', 'count', 'extend', 'index', 'insert', 'pop', 'remove', 'reverse', 'sort', 'clear'])
 
-manager = MyListManager(address=('/tmp/mypipe'), authkey='')
+manager = MyListManager(address=('/tmp/mypipe'), authkey=''.encode('utf-8'))
 manager.start()
 
 
@@ -75,10 +72,10 @@ lonA = home_lon
 run = True
 
 # We will need this for the lora data 
-lora = serial.Serial(port="COM9", baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2)
-lora.flushInput()
-lora.flushOutput()
-print("running")
+# lora = serial.Serial(port="COM9", baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2)
+# lora.flushInput()
+# lora.flushOutput()
+# print("running")
 
 # Create a socket for the server
 ip = "192.168.1.31" # this will need to be changed
@@ -98,7 +95,7 @@ while True:
     print("syncarr (master):", syncarr, "syncarr_tmp:", syncarr_tmp)
     print("syncarr initial:", syncarr_tmp.__str__())
 
-    syncarr_tmp.append()
+    # syncarr_tmp.append()
 
     line = test_string.decode('utf-8')
     vals = line.split(',')
@@ -106,7 +103,8 @@ while True:
     i = 0
     for item in vals :
 
-        syncarr_tmp.__setitem__(i,item)
+        syncarr_tmp.append(item)
+        print("item: ", item)
         i+= 1
     
     print("number of items set: ", i+1)
@@ -136,9 +134,16 @@ while True:
     time.sleep(1)
     test_string = "$Clueboard"
     for i in range(8) :
-        test_string += input("input: ")
-        if input == "stop" :
+        test_string += "," + input("input: ")
+        if "stop" in test_string :
             break
+    if "stop" in test_string :
+        break
+
+    print("test_string: ", test_string)
+    test_string = test_string.encode('utf-8')
+    syncarr_tmp.clear()
+    
     
 manager.shutdown()
 
