@@ -45,7 +45,7 @@ def serverThread(threadname, q):
         rssi = ''
         while invalid:  # Or: while ser.inWaiting():
             if lora.in_waiting:
-                print("in wating: "+str(lora.in_waiting))
+                print("in waiting: "+str(lora.in_waiting))
                 try:
                     line = lora.readline().decode("utf-8")
                     lineToSave = line
