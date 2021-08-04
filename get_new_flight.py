@@ -2,7 +2,9 @@ import requests
 import time
 import json
 
-
+'''
+Run this in order to generate a new flight ID
+'''
 
 r = requests.post('http://cytracking.com/REST/V1/new_flight')
 print(r)
