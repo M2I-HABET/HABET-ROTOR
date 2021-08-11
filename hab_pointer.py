@@ -19,7 +19,7 @@ For this to work, the data broker (data_broker_penthouse.py) needs to be running
 will attempt to grab data from an object that does not exist.
 '''
 logger = multiprocessing.log_to_stderr()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 class MyListManager(multiprocessing.managers.BaseManager):
@@ -56,7 +56,7 @@ def main():
     # print ("List now:", syncarr)
 
     while True:
-        print("Start while")
+        print("===HAB POINTER===")
         line = ""
         invalid = True
         
@@ -67,6 +67,7 @@ def main():
         
         # While there is no new valid data given
         while invalid:  # Or: while ser.inWaiting():
+            print("Attempting to get data for rotor")
             try:
                 # set data to syncarr since it is easier to work with when you set a variable to it
                 data = syncarr
