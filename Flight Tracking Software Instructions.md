@@ -45,7 +45,7 @@ There are at minimum, four scripts that must be run in order to track a flight. 
 3. Connect to the Raspberry Pi 3 via SSH (use PuTTy on Windows or Remmina on Linux) and run `lora_server.py`.  IP address, username, and password for this device are a need to know basis.  Contact your team lead or project lead for these.
 4. Run `hab_pointer.py`.  This enables the rotor to track our payload during the flight.
 5. Run `send_data.py`.  This will send the GPS data to the cytrack website for us to track real-time.
-6. Any other scripts that utilize 
+6. Run any other scripts that pull data from `data_broker.py`.
 
 To view the flight go to: `cytracking.com/cytrack/<flightID>`
 
@@ -58,7 +58,6 @@ After getting `data_broker.py` and `lora_server.py` connected together and runni
 ---
 
 ### Manually pointing the Antenna
-
 
 If you need to manually point the antenna, use `manual_pointing.bat`.  (This simply runs the Python script, `rot2proG.py`.)  
 
