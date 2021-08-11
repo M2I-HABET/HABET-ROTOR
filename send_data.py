@@ -8,8 +8,10 @@ from threading import Thread
 import multiprocessing
 import multiprocessing.managers
 import logging
+
+
 logger = multiprocessing.log_to_stderr()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 
@@ -37,8 +39,8 @@ def main():
     # home_lon = -93.65338786489195
     # home_alt = 350
     # R = 6372.795477598*1000
-    flightID = "4a2c6d0e-47bc-4c29-a029-0ece360d2b5e" # You will want to change this every flight
-    scriptID = "b80b32af-3025-4b1c-b9f1-a15909c63958"
+    flightID = "65e44dc8-e933-43a8-9ec6-2b9260d13da7" # You will want to change this every flight
+    scriptID = "0620f4a1-cb45-40ec-ab3f-71a1cf052449"
     postURL = "http://cytracking.com/REST/V1/flight_location"
     postURLRaw = "http://cytracking.com/REST/V1/flight_data_raw"
 
@@ -55,6 +57,7 @@ def main():
 
     print("Running")
     while True:
+        print("===SEND DATA===")
         arr_data = []
         invalid = True
         data = ""
@@ -63,7 +66,7 @@ def main():
         alt = ''
         rssi = ''
         while invalid:
-            
+            print("Attempting to send GPS data to website")
             try:
                 # set data to syncarr since it is easier to work with when you set a variable to it
                 arr_data = syncarr
