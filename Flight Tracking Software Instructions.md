@@ -2,7 +2,7 @@
 
 Author: Matt Kreul\
 Written: 2021-07-05\
-Edited: 2021-08-04
+Edited: 2021-08-09
 
 These are instructions for running the penthouse computer in order to track a flight for HABET.
 
@@ -30,7 +30,7 @@ The data broker will then take this information and split it up and save it to a
 [ $HAR , 420266988 , -936531391 , 261586 , 28.52 , 43.09 , 984.9]
 ```
 
-(Note that the data are all saved as strings and will need to be parsed into floating point values in order to be any use.  Furthermore, latitude, longitude, and altitude are all saved aas integers and will need to be divided by 10000000, 10000000, and 1000 respectively to get the correct value).
+(Note that the data are all saved as strings and will need to be parsed into floating point values in order to be any use.  Furthermore, latitude, longitude, and altitude are all saved as integers and will need to be divided by 10000000, 10000000, and 1000 respectively to get the correct value).
 
 Any script that needs this data to run can be created in order to grab the correct information.
 
