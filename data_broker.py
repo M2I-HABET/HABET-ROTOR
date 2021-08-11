@@ -23,7 +23,7 @@ Most of this code was borrowed followed from this StackOverflow answer:
 '''
 
 logger = multiprocessing.log_to_stderr()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 class MyListManager(multiprocessing.managers.BaseManager):
@@ -72,7 +72,7 @@ def main() :
 
     print("Start While")
     while True:
-        
+        print("===DATA BROKER===")
         try : 
             # Saving syncarr as another variable makes it a little easier to work with
             syncarr_tmp = manager.syncarr()
