@@ -1,2 +1,0 @@
-python disp_data_obs.bat
-pause
