@@ -17,8 +17,8 @@ def main():
    
 
     # def main():
-    # manager = MyListManager(address=('/tmp/mypipe'), authkey=''.encode('utf-8'))
-    manager = MyListManager(address=('192.168.1.205', 8080), authkey=''.encode('utf-8'))
+    manager = MyListManager(address=('/tmp/mypipe'), authkey=''.encode('utf-8'))
+    # manager = MyListManager(address=('192.168.1.31', 8080), authkey=''.encode('utf-8'))
     manager.connect()
     syncarr = manager.syncarr()
 
@@ -51,12 +51,12 @@ def main():
                 print("alt: ", alt)
                 print
                 f = open('obs_data.txt', "w")
-                print("Latitude: \t", lat, file=f)
-                print("Longitude: \t", lon, file=f)
-                print("Altitude: \t", alt, "m", file=f)
-                print("Temperature: \t", temp, "C", file=f)
-                print("Humidity: \t", hum, "\%", file=f)
-                print("Pressure: \t", pres, "hPa", file=f)
+                print("Latitude: ", lat, file=f)
+                print("Longitude: ", lon, file=f)
+                print("Altitude: ", alt, "m", file=f)
+                print("Temperature: ", temp, "C", file=f)
+                print("Humidity: ", hum, "%", file=f)
+                print("Pressure: ", pres, "hPa", file=f)
                 invalid = False
                 f.close()
             except :
