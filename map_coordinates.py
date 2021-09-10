@@ -65,7 +65,11 @@ def main():
     howe_hall = (-93.65287451738621, 42.027034639829346) # other flights use this
     four_H = (-93.55537888198775, 41.592104221317534) # use this for the state fair flight
 
-    launch_site = howe_hall
+    # Coordinates for landing
+    friday = (-92.808,41.9488)
+    sunday = (-94.1296,41.4146)
+
+    launch_site = four_H
 
     # Add the initial coordinates to the longitude and latitude lists
     lon.append(launch_site[0])
@@ -77,8 +81,8 @@ def main():
 
     # Get the range for what the tilemapbase should be looking for (I think?)
     degree_range = 0.25
-    extent = tilemapbase.Extent.from_lonlat(launch_site[0] - degree_range, launch_site[0] + degree_range,
-                    launch_site[1] - degree_range, launch_site[1] + degree_range)
+    extent = tilemapbase.Extent.from_lonlat(sunday[0] - degree_range, launch_site[0] + degree_range,
+                    sunday[1] - degree_range, launch_site[1] + degree_range)
     extent = extent.to_aspect(1.0)
 
     # Convert to web mercator
@@ -89,7 +93,7 @@ def main():
 
     # Plot and then save to a JPG which will then be used to display the balloon's path
     plotter.plot(ax)
-    ax.plot(x, y,"b-")
+    ax.plot(x, y,"b-", linewidth=1)
     plt.axis('off')
     plt.savefig('HABET-ROTOR/map.jpg',bbox_inches = "tight",dpi = 300)
     time.sleep(1)
@@ -138,9 +142,9 @@ def main():
                     # Plot the values 
                     print("plotting values!")
                     if change_size :
-                        extent = tilemapbase.Extent.from_lonlat(min_lon - degree_range, max_lon + degree_range,
-                        min_lat - degree_range, max_lat + degree_range)
-                        extent = extent.to_aspect(1.0)
+                        # extent = tilemapbase.Extent.from_lonlat(min_lon - degree_range, max_lon + degree_range,
+                        # min_lat - degree_range, max_lat + degree_range)
+                        # extent = extent.to_aspect(1.0)
                         change_size = False
                     # Convert to web mercator
                     path = [tilemapbase.project(x,y) for x,y in zip(lon, lat)]
@@ -148,7 +152,7 @@ def main():
                     fig, ax = plt.subplots()
                     plotter = tilemapbase.Plotter(extent, tilemapbase.tiles.build_OSM(), width=600)
                     plotter.plot(ax)
-                    ax.plot(x, y,"b-")
+                    ax.plot(x, y,"b-", linewidth=1)
                     plt.axis('off')
                     plt.savefig('HABET-ROTOR/map.jpg',bbox_inches = "tight",dpi = 300)
                     time.sleep(1)
@@ -158,9 +162,9 @@ def main():
 
                 print("syncarr may not be set, or no new data")
                 continue
-            else :
+            finally :
                 time.sleep(1)
-        time.sleep(5)
+        time.sleep(1)
         i = (i+1)%15
 
 
