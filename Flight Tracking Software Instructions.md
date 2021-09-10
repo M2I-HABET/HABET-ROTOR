@@ -57,7 +57,7 @@ After getting `data_broker.py` and `lora_server.py` connected together and runni
 
 ---
 
-### Manually pointing the Antenna
+### Manually Pointing the Antenna
 
 If you need to manually point the antenna, use `manual_pointing.bat`.  (This simply runs the Python script, `rot2proG.py`.)  
 
@@ -67,3 +67,22 @@ If you need to manually point the antenna, use `manual_pointing.bat`.  (This sim
 4. Type in your desired `Elevation`. This number should be between 0 and 180.  Level with the horizon is 0 and completely vertical is 90.
 
 Once these parameters have been set and if there were no errors in input, the rotor will begin to move to the desired position.  If you need to set it again, simply start from number 2 in the above instructions.
+
+
+### Invalid Permission When Trying to Access Rotor
+
+If the rotor scripts do not work and give you an error message entailing that the permissions are enough, there could be many different issues involved.  
+
+Make sure that you know what port Rot2Prog is connected to.  From the Rot2Prog instructions, attempt the following (*Note that this is for Linux Machines ONLY*):
+1. Open the terminal program.
+2. Type `ls /dev/ttyUSB*`.  A list of ports will appear.  The Controller port will appear like this,  `/dev/ttyUSBX`, where X is digit starting at 0
+3. Remember this port address.  The entire address should be typed into the correct place in the `rot2prog.py` and `hab_pointer.py` scripts. 
+
+If there are still issues with accessing the serial port, proper authorization may not be enabled.  Once you know the correct port that the Rot2Prog is connected to, follow these instructions here:
+
+1. Open up the terminal and type `sudo su`
+2. If asked, type the computer's password 
+3. Navigate to the `dev` directory (i.e. `cd` to `root` and then `cd dev` )
+4. Once in the `dev` directory, type the following `chown username ttyUSBX`, where X is a digit starting at 0. 
+
+Once this is done, proper authorization should be enabled.  
