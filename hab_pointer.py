@@ -41,11 +41,11 @@ def main():
     lonA = home_lon
 
     # Start the rotor
-    rot = rot2proG.Rot2proG("ttyUSB0")
+    rot = rot2proG.Rot2proG("/dev/ttyUSB0")
 
     
-    # manager = MyListManager(address=('/tmp/mypipe'), authkey=''.encode('utf-8')) #for UNIX
-    manager = MyListManager(address=('192.168.1.205', 8080), authkey=''.encode('utf-8'))
+    manager = MyListManager(address=('/tmp/mypipe'), authkey=''.encode('utf-8')) #for UNIX
+    # manager = MyListManager(address=('192.168.1.205', 8080), authkey=''.encode('utf-8'))
     manager.connect()
     syncarr = manager.syncarr()
 

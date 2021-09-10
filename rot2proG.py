@@ -380,7 +380,7 @@ class Rot2proG:
 				print("Try 'help' for more information")
 
 if __name__ == "__main__":
-	rot = Rot2proG('ttyUSB0')
+	rot = Rot2proG('/dev/ttyUSB0')
 	rot.cmd_mode()
 	del rot
 	print("Done")
