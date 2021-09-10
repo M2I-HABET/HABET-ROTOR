@@ -21,7 +21,7 @@ def main():
     # manager = MyListManager(address=('192.168.1.31', 8080), authkey=''.encode('utf-8'))
     manager.connect()
     syncarr = manager.syncarr()
-
+    max_height = 36700
     # print ("arr = %s" % (dir(syncarr)))
 
     # note here we need not bother with __str__ 
@@ -44,6 +44,8 @@ def main():
                 temp = float(data[4])
                 hum = float(data[5])
                 pres = float(data[6])
+                if max_height < alt :
+                    max_height = alt
                 # Save the time it was saved
                 now = datetime.now()
                 print("lat: ", lat)
@@ -53,10 +55,12 @@ def main():
                 f = open('obs_data.txt', "w")
                 print("Latitude: ", lat, file=f)
                 print("Longitude: ", lon, file=f)
-                print("Altitude: ", alt, "m", file=f)
+                print("Altitude (meters): ", round(alt), "m", file=f)
+                print("Altitude (feet): ", round(alt*3.281),"ft", file=f)
                 print("Temperature: ", temp, "C", file=f)
                 print("Humidity: ", hum, "%", file=f)
                 print("Pressure: ", pres, "hPa", file=f)
+                print("Max Alt: ", round(max_height),"m, ", round(max_height*3.281), "ft", file=f)
                 invalid = False
                 f.close()
             except :
