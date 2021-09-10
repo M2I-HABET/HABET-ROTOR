@@ -41,7 +41,7 @@ def main():
     lonA = home_lon
 
     # Start the rotor
-    rot = rot2proG.Rot2proG("COM6")
+    rot = rot2proG.Rot2proG("ttyUSB0")
 
     
     # manager = MyListManager(address=('/tmp/mypipe'), authkey=''.encode('utf-8')) #for UNIX
