@@ -38,18 +38,16 @@ def main() :
     # Start Script
     print("Data Broker started")
     # Constants
-    ip = "192.168.1.31" # 192.168.1.31 is for the state fair flight and 192.168.1.205 is for flight
+    ip = "192.168.1.206" # ip address for linux machine
     port_parse = 8080 # port for scripts to attach to
     port_lora = 4440 # port for getting data from the lora
-    # home_lat = 42.02700680709537
-    # home_lon = -93.65338786489195
-    # home_alt = 300
-    # R = 6372.795477598*1000
 
     # Syncarr
     print("Create synarr in register")
+    # The following exposes "syncarr" globally to the entire system as well as the functions associated with it in the exposed section
     MyListManager.register("syncarr", get_arr, exposed=['__getitem__', '__setitem__', '__str__', 'append', 'count', 'extend', 'index', 'insert', 'pop', 'remove', 'reverse', 'sort', 'clear'])
     print("Syncarr created!")
+    
     manager = MyListManager(address=('/tmp/mypipe'), authkey=''.encode('utf-8')) # for Unix
     # manager = MyListManager(address=(ip, port_parse), authkey=''.encode('utf-8'))
     print("Server address for scripts to attach to: ", ip, ":", port_parse)

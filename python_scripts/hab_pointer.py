@@ -49,12 +49,6 @@ def main():
     manager.connect()
     syncarr = manager.syncarr()
 
-    # note here we need not bother with __str__ 
-    # syncarr can be printed as a list without a problem:
-    print ("List at start:", syncarr)
-    # syncarr.append(30)
-    # print ("List now:", syncarr)
-
     while True:
         print("===HAB POINTER===")
         line = ""

@@ -68,8 +68,10 @@ def main():
     # Coordinates for landing
     friday = (-92.808,41.9488)
     sunday = (-94.1296,41.4146)
+    sept_26_2021 = (-92.3322, 41.8771)
 
-    launch_site = four_H
+    launch_site = howe_hall
+    landing_site = sept_26_2021
 
     # Add the initial coordinates to the longitude and latitude lists
     lon.append(launch_site[0])
@@ -80,9 +82,9 @@ def main():
     max_lat = launch_site[1]
 
     # Get the range for what the tilemapbase should be looking for (I think?)
-    degree_range = 0.25
-    extent = tilemapbase.Extent.from_lonlat(sunday[0] - degree_range, launch_site[0] + degree_range,
-                    sunday[1] - degree_range, launch_site[1] + degree_range)
+    degree_range = 0.8
+    extent = tilemapbase.Extent.from_lonlat(min(landing_site[0] - degree_range, launch_site[0] - degree_range), max(landing_site[0] + degree_range, launch_site[0] + degree_range),
+                    min(landing_site[1] - degree_range, launch_site[1] - degree_range), max(landing_site[1] + degree_range, launch_site[1] + degree_range))
     extent = extent.to_aspect(1.0)
 
     # Convert to web mercator
@@ -95,7 +97,7 @@ def main():
     plotter.plot(ax)
     ax.plot(x, y,"b-", linewidth=1)
     plt.axis('off')
-    plt.savefig('HABET-ROTOR/map.jpg',bbox_inches = "tight",dpi = 300)
+    plt.savefig('map.jpg',bbox_inches = "tight",dpi = 300)
     time.sleep(1)
     plt.close()
 
@@ -154,7 +156,7 @@ def main():
                     plotter.plot(ax)
                     ax.plot(x, y,"b-", linewidth=1)
                     plt.axis('off')
-                    plt.savefig('HABET-ROTOR/map.jpg',bbox_inches = "tight",dpi = 300)
+                    plt.savefig('map.jpg',bbox_inches = "tight",dpi = 300)
                     time.sleep(1)
                     plt.close()
                     print("Saved picture!")
