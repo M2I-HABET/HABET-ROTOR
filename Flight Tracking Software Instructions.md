@@ -27,7 +27,7 @@ $HAR,420266988,-936531391,261586,28.52,43.09,984.9
 The data broker will then take this information and split it up and save it to a list (array) that other scripts can grab onto easily.  An example of what the parsed data looks like is below:
 
 ```
-[ $HAR , 420266988 , -936531391 , 261586 , 28.52 , 43.09 , 984.9]
+[ "$HAR" , "420266988" , "-936531391" , "261586" , "28.52" , "43.09" , "984.9" ]
 ```
 
 (Note that the data are all saved as strings and will need to be parsed into floating point values in order to be any use.  Furthermore, latitude, longitude, and altitude are all saved as integers and will need to be divided by 10000000, 10000000, and 1000 respectively to get the correct value).
