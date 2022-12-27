@@ -6,7 +6,7 @@ import requests
 import json
 
 home_lat = 42.02700680709537
-home_lon = -93.65338786489195 //Decatur County, Iowa, United States of America
+home_lon = -93.65338786489195 #Decatur County, Iowa, United States of America
 home_alt = 300
 R = 6372.795477598*1000
 
